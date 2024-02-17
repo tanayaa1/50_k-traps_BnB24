@@ -1,0 +1,239 @@
+<html>
+
+<head>
+  <title>Emotion Music Recommendation</title>
+
+  <style>
+   .body2 {
+            /* background-image: url('C:\Users\rohan\OneDrive\Desktop\Spotify\Music-Portal\Emotion-Music-Recommendation\templates\bg.png');
+
+            /* background-color: #121212;*/
+            /* Set the background size to cover the entire viewport */
+            /* background-size: cover; */
+
+            /* Set the background to not repeat */
+            /* background-repeat: no-repeat; */
+
+            /* Center the background image */
+            /* background-position: center center;  */
+
+            /* Set a fixed background attachment (optional) */
+            /* background-attachment: fixed; */
+            background-color: #000;
+            color: #fff;
+            font-family: 'Helvetica Neue', sans-serif;
+        }
+
+        #body {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1,
+        h2 {
+            color: #fff;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        #ResultArea {
+            /* background-color: #282828; */
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+            background-color: #282828;
+            border-radius: 10px;
+        }
+
+        th,
+        td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid #535353;
+            margin-bottom: 30px;
+        }
+
+        th {
+            background-color: #121212;
+        }
+
+        .outer-shadow {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+
+        .styled-table {
+            border-collapse: collapse;
+            width: 80%;
+            max-width: 800px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #000;
+            border-radius: 12px;
+            /* Rounded corners for the table */
+            margin: 20px;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #000;
+            margin-bottom: 30px;
+            /* Increase space between rows */
+        }
+
+        .styled-table th {
+            background-color: #FFA6C9;
+            color: #000;
+            /* border-radius: 12px 12px 0 0; */
+            /* Rounded corners for the table header */
+        }
+
+        .styled-table tbody tr:nth-child(odd) {
+            background-color: #008264;
+            /* Alternate pastel colors for odd rows */
+        }
+
+        .styled-table tbody tr:nth-child(even) {
+            background-color: #9063CD;
+
+            /* Alternate pastel colors for even rows */
+        }
+
+        .styled-table tbody tr:hover {
+            background-color: #fff;
+            /* Color on hover */
+        }
+
+  </style>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous" />
+  <link href="https://fonts.googleapis.com/css2?family=Bigelow+Rules&display=swap" rel="stylesheet">
+  <link type="text/css" href="{{ url_for('static', filename='/css/style.css') }}" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+    crossorigin="anonymous"></script>
+</head>
+
+<body style="
+  
+  color: #000;
+  font-family: 'Helvetica Neue', sans-serif;
+"
+class="body2">
+<div class="body2"></div>
+
+
+    <div>
+
+      <h1 align="center" style="color:#1DB954;
+	  margin: 40px;">
+        Emotion Music Recommender System
+      </h1>
+
+    </div>
+
+    <div style="
+        width: 50%;
+        float: left;
+        height: 100%%;
+      
+        margin: auto;
+        padding-bottom:25px;
+        text-align: center;
+      ">
+
+    <h2 align="center" style="color: #1DB954;">Emotion Detector
+    </h2>
+
+    <div style="
+        margin: 10px;
+        text-align: center;
+        width: 49%%;
+      "> 
+    
+    <img class="outer-shadow center img-fluid" id="bg" src="{{ url_for('video_feed') }}" />
+  
+    </div>
+
+    </div>
+    
+    <div style="
+        width: 50%;
+        float: left;
+        height: 100%%;
+        margin: auto;
+        text-align: center;
+      ">
+
+        <h2 align="center" style="color: #1DB954;">Song Recommendations
+        </h2>
+      
+     </div>
+
+    <div class ="outer-shadow" id="ResultArea" style="
+        padding: 15px;
+        width: 49%;
+        float: left;
+        height: 100%%;
+        margin: auto;
+        text-align: center;
+        margin-bottom:15px;
+      ">
+    </div>
+
+  </div>
+  </div>
+    
+</body>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type=text/javascript>
+
+// Constantly Update Table
+    setInterval(function() {
+        $.getJSON('/t', function(data) {
+            CreateHtmlTable(data);
+            console.log(data,"DATA");
+          });
+        return false;
+    }, 100);
+
+    function CreateHtmlTable(data) {
+      //Clear result div
+      $("#ResultArea").html("");
+      //Crate table html tag
+      var table = $("<table class = ' styled-table' id=DynamicTable></table>").appendTo("#ResultArea");
+      //Create table header row
+      var rowHeader =   
+      $("<tr></tr>").appendTo(table);
+      $("<td></td>").text("Name").appendTo(rowHeader);
+      $("<td></td").text("Album").appendTo(rowHeader);
+      $("<td></td>").text("Artist").appendTo(rowHeader)
+      //Get JSON data by calling action method in controller
+      $.each(data, function (i, value) {
+
+          //Create new row for each record
+          var row = 
+          $("<tr></tr>").appendTo(table);
+          $("<td></td>").text(value.Name).appendTo(row);
+          $("<td></td>").text(value.Album).appendTo(row);
+          $("<td></td>").text(value.Artist).appendTo(row);
+      });
+    }
+
+  </script>
+
+</html>
